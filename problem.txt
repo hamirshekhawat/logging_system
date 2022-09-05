@@ -1,0 +1,59 @@
+Given a continuous stream of logs in a text file, come up with an alerting system which based on a alerting configuration sends alerts on different channels.
+
+Supported channels
+1. SMS
+2. Email
+3. PN
+
+Example configuration
+WARN:
+  threshold: 5
+  wait_time: 5m
+  measurment_window: 1m
+  notification_channels:
+    - EMAIL
+  notifiable_users:
+    -  user1
+    -  user2
+ERROR:
+  threshold: 2
+  wait_time: 2m
+  measurement_window: 30s
+  notification_channels:
+    - PN
+    - SMS
+  notifiable_users:
+    - user3
+    - user4
+
+
+Example Input file
+Type|time_in_seconds|log
+WARN 00:00  log1
+WARN 00:01  log2
+WARN 00:03  log3
+ERROR 00:04 log4
+WARN 00:05 log5
+ERROR 00:06 log7
+WARN 00:07 log8
+ERROR 00:08 log9
+ERORR 00:09 log10
+
+Configuration logic:
+for all logs of type WARN if there are 5 occurrences within 1m time interval, the system will notify users user1, user2 on email.
+After notifying the users, the system has to wait for 5m until measuring again for subsequent notifications.
+
+Similarly for all logs of type ERROR if there are 2 occurrences within 1m time interval, the system will notify users user3, user4 on PN, SMS.
+
+With the above example input file, we see that at 00:06 second, we get 2 occurrences of logs of type error within the 1m time measurement window assuming that
+we start measuring from 00:00. Hence at 00:06s the system has to send out notifications. Similarly at 00:07 we have got 5 occurrences of logs of type WARN, hence another
+notification has to be triggered.
+
+Once the notification for ERROR has gone out at 00:06s we have to wait until 02:06s, until we start measuring again. i.e, between 00:06s and 02:06s no matter how many occurrences
+of ERROR comes, it has to be ignored.
+
+ Tips:
+ 1. You can just log to std out saying that sending notification to users on sms or something for the sake of proving the solution to be correct, you need not
+ send the notification on a real communication medium
+ 2. Use proper design patterns where ever necessary
+ 3. System should be flexible enough to handle more log types and communication channels

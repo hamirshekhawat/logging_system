@@ -1,5 +1,7 @@
 package logtypes
 
+import "time"
+
 // LogType is a struct and not an interface to allow creation of LogTypes on the fly if required.
 type LogType struct {
 	LogtypeName          string
@@ -12,12 +14,13 @@ type LogType struct {
 
 func (logType *LogType) MeasurementWindowInSeconds() int64 {
 	// logType.MeasurmentWindow
-	return 3
+	t, _ := time.ParseDuration(logType.MeasurmentWindow)
+	return int64(t.Seconds())
 }
 
 func (logType *LogType) WaitTimeInSeconds() int64 {
-	// logType.waitTime
-	return 0
+	t, _ := time.ParseDuration(logType.MeasurmentWindow)
+	return int64(t.Seconds())
 }
 
 var WarnLogType LogType = LogType{
@@ -31,7 +34,7 @@ var WarnLogType LogType = LogType{
 
 var ErrorLogType LogType = LogType{
 	LogtypeName:          "ERROR",
-	Threshold:            3,
+	Threshold:            2,
 	WaitTime:             "2m",
 	MeasurmentWindow:     "30s",
 	NotificationChannels: []string{"PN", "SMS"},      

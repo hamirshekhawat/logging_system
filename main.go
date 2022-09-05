@@ -7,11 +7,19 @@ import (
 	l "log-alerting-system/log_instance"
 	t "log-alerting-system/log_types"
 	"os"
+	"fmt"
 )
 
 func main() {
-
-	file, err := os.Open("logs_timestamp.txt") // take this from command line
+	var filename string
+	if(len(os.Args) > 1) {
+		filename = os.Args[1]
+	} else {
+		fmt.Println("warning: Please provide the logs filename as argument.\nUsing test log file for demonstartion.")
+		filename = "logs_problem.txt"
+	}
+	
+	file, err := os.Open(filename) // take this from command line
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,17 +29,19 @@ func main() {
 	// scanner capacity is 64k characters
 	for scanner.Scan() {
 		logString := scanner.Text()
-		log, err := l.StringToLog(logString)
+		_log, err := l.StringToLog(logString)
 
 		if err == nil {
-			switch log.LogType {
+			switch _log.LogType {
 			case &t.ErrorLogType:
-				s.ErrorLogData.Scan(log)
+				s.ErrorLogData.Scan(_log)
 				break
 			case &t.WarnLogType:
-				s.WarnLogData.Scan(log)
+				s.WarnLogData.Scan(_log)
 				break
 			}
+		} else {
+			log.Fatal(err)
 		}
 	}
 
