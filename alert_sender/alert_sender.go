@@ -1,9 +1,11 @@
+// Holds logic to send alert based on log type's configuration
 package alertsender
 
 import (
-	"fmt"
 	l "log-alerting-system/log_instance"
 	t "log-alerting-system/log_types"
+	nc "log-alerting-system/notification_channels"
+
 )
 
 type LogData struct {
@@ -41,8 +43,6 @@ func (logData *LogData) Scan(log *l.LogInstance) {
 				}
 			}
 			logData.send(log, true)
-			
-			
 		}
 	}
 }
@@ -52,7 +52,7 @@ func (logData *LogData) send(log *l.LogInstance, updateEndTime bool) {
 	logData.configWidowQueue = append(logData.configWidowQueue, *log)
 	if len(logData.configWidowQueue) == log.LogType.Threshold {
 		for _, c := range t.WarnLogType.NotificationChannels {
-			sendAlertOnChannel(c, logData.configWidowQueue, t.WarnLogType.NotifiableUsers)
+			nc.SendAlertOnChannel(c, logData.configWidowQueue, t.WarnLogType.NotifiableUsers)
 		}
 		if(updateEndTime) {
 			logData.endtime = logData.configWidowQueue[0].Timestamp + log.LogType.MeasurementWindowInSeconds()
@@ -60,54 +60,4 @@ func (logData *LogData) send(log *l.LogInstance, updateEndTime bool) {
 		logData.configWidowQueue = []l.LogInstance{}
 		logData.sendNextLogAfter = log.Timestamp + log.LogType.WaitTimeInSeconds()
 	}
-}
-
-func sendAlertOnChannel(channel string, logs []l.LogInstance, users []string) {
-	switch channel {
-	case "EMAIL":
-		sendEmail(logs, users)
-		break
-	case "SMS":
-		sendSMS(logs, users)
-		break
-	case "PN":
-		sendPN(logs, users)
-		break
-	}
-}
-
-func sendEmail(logs []l.LogInstance, users []string) {
-	fmt.Print("sending email to users: ")
-	var logStrings []string
-	for _, l := range logs {
-		logStrings = append(logStrings, l.ToString())
-	}
-	fmt.Print(users)
-	fmt.Print(" Logs:")
-	fmt.Print(logStrings)
-	fmt.Println()
-}
-
-func sendSMS(logs []l.LogInstance, users []string) {
-	fmt.Println("sending sms to users: ")
-	var logStrings []string
-	for _, l := range logs {
-		logStrings = append(logStrings, l.ToString())
-	}
-	fmt.Print(users)
-	fmt.Print(" Logs:")
-	fmt.Print(logStrings)
-	fmt.Println()
-}
-
-func sendPN(logs []l.LogInstance, users []string) {
-	fmt.Println("sending PN to users: ")
-	var logStrings []string
-	for _, l := range logs {
-		logStrings = append(logStrings, l.ToString())
-	}
-	fmt.Print(users)
-	fmt.Print(" Logs:")
-	fmt.Print(logStrings)
-	fmt.Println()
 }

@@ -1,15 +1,18 @@
+// Different logtypes configurations are added here
 package logtypes
 
 import "time"
 
-// LogType is a struct and not an interface to allow creation of LogTypes on the fly if required.
+import u "log-alerting-system/user"
+
+// LogType is a struct to allow creation of LogTypes on the fly if required.
 type LogType struct {
 	LogtypeName          string
 	Threshold            int
 	WaitTime             string
 	MeasurmentWindow     string
 	NotificationChannels []string
-	NotifiableUsers      []string
+	NotifiableUsers      []u.User
 }
 
 func (logType *LogType) MeasurementWindowInSeconds() int64 {
@@ -28,8 +31,18 @@ var WarnLogType LogType = LogType{
 	Threshold:            5,
 	WaitTime:             "5m",
 	MeasurmentWindow:     "1m",
-	NotificationChannels: []string{"EMAIL"},          // notification channel can be an interface
-	NotifiableUsers:      []string{"user1", "user2"}, // user can also be a struct
+	NotificationChannels: []string{"EMAIL"}, // notification channel can be an interface
+	NotifiableUsers: []u.User{{
+		Name:    "user 1",
+		EmailId: "",
+		PnId:    "",
+		SmsId:   "",
+	}, {
+		Name:    "user 2",
+		EmailId: "",
+		PnId:    "",
+		SmsId:   "",
+	}}, // user can also be a struct
 }
 
 var ErrorLogType LogType = LogType{
@@ -37,6 +50,16 @@ var ErrorLogType LogType = LogType{
 	Threshold:            2,
 	WaitTime:             "2m",
 	MeasurmentWindow:     "30s",
-	NotificationChannels: []string{"PN", "SMS"},      
-	NotifiableUsers:      []string{"user3", "user4"}, 
+	NotificationChannels: []string{"PN", "SMS"},
+	NotifiableUsers: []u.User{{
+		Name:    "user 3",
+		EmailId: "",
+		PnId:    "",
+		SmsId:   "",
+	}, {
+		Name:    "user 4",
+		EmailId: "",
+		PnId:    "",
+		SmsId:   "",
+	}},
 }

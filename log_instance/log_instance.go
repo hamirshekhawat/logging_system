@@ -1,3 +1,4 @@
+// Provides an instance of log as a struct
 package loginstance
 
 import (
