@@ -111,7 +111,7 @@ When a warning log is encountered, it should be added to the window if:
 
 To add to LogsData, use 
 ```go
-  LogsData.Scan(og *l.LogInstance)
+  LogsData.Scan(log *l.LogInstance)
 ```
 
 Once the size of the window reaches threshold, logs are sent using 
@@ -143,7 +143,8 @@ Logs are added to resepective channel and sent over the channel using
 func SendAlertOnChannel(channel string, logs []l.LogInstance, users []u.User) {...}
 ```
 
-## Design patterns used
+
+### Design patterns used
 
 Creational pattern (Factory Method is StringToLog) is used to create instances of logs and store them in their respective windows LogsData. LogsData then handles the sending logic. Every notification channel is basicaly an implementation of NotificationChannel interface and should abide by it's signature. It is ensured by SendLogs(nc NotificationChannel) function. 
 
