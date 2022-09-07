@@ -8,25 +8,25 @@ import (
 
 )
 
-type LogData struct {
+type LogsData struct {
 	sendNextLogAfter int64
 	endtime          int64
 	configWidowQueue []l.LogInstance // A queue like array to store logs that are going to be sent
 }
 
-var WarnLogData LogData = LogData{
+var WarnLogData LogsData = LogsData{
 	sendNextLogAfter: -1,
 	endtime:          -1,
 	configWidowQueue: []l.LogInstance{},
 }
 
-var ErrorLogData LogData = LogData{
+var ErrorLogData LogsData = LogsData{
 	sendNextLogAfter: -1,
 	endtime:          -1,
 	configWidowQueue: []l.LogInstance{},
 }
 
-func (logData *LogData) Scan(log *l.LogInstance) {
+func (logData *LogsData) Scan(log *l.LogInstance) {
 	if len(logData.configWidowQueue) == 0 {
 		logData.endtime = log.Timestamp + log.LogType.MeasurementWindowInSeconds()
 	}
@@ -48,7 +48,7 @@ func (logData *LogData) Scan(log *l.LogInstance) {
 }
 
 // can be called async: go logData.send()
-func (logData *LogData) send(log *l.LogInstance, updateEndTime bool) {
+func (logData *LogsData) send(log *l.LogInstance, updateEndTime bool) {
 	logData.configWidowQueue = append(logData.configWidowQueue, *log)
 	if len(logData.configWidowQueue) == log.LogType.Threshold {
 		for _, c := range t.WarnLogType.NotificationChannels {

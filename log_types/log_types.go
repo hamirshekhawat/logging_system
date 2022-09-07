@@ -31,7 +31,7 @@ var WarnLogType LogType = LogType{
 	Threshold:            5,
 	WaitTime:             "5m",
 	MeasurmentWindow:     "1m",
-	NotificationChannels: []string{"EMAIL"}, // notification channel can be an interface
+	NotificationChannels: []string{"EMAIL"},
 	NotifiableUsers: []u.User{{
 		Name:    "user 1",
 		EmailId: "",
@@ -42,7 +42,7 @@ var WarnLogType LogType = LogType{
 		EmailId: "",
 		PnId:    "",
 		SmsId:   "",
-	}}, // user can also be a struct
+	}},
 }
 
 var ErrorLogType LogType = LogType{
