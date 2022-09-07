@@ -93,11 +93,11 @@ All logs that need to be sent are stored in objects of a struct LogsData defined
 ```go
 type LogsData struct {
     sendNextLogAfter int64
-	endtime          int64
-	configWidowQueue []l.LogInstance
+    endtime          int64
+    configWidowQueue []l.LogInstance
 }
 ```
-It uses configWidowQueue to store logs that can be valid to send, depending of log type's configuration. For every LogType, a LogsData object should be created like for above WarnLogType, the log data would look like:
+It uses configWidowQueue to store logs that can be valid to send, depending on log type's configuration. For every LogType, a LogsData object should be created. Like for above WarnLogType, the log data would look like:
 ```go
 var WarnLogsData LogsData = LogsData{
     sendNextLogAfter: -1,
